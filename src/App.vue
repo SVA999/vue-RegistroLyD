@@ -143,9 +143,8 @@ function updateFormData(field, value) {
 }
 
 function agregarRegistro(nuevo) {
-  historial.value.push(nuevo);
+  historial.value.push(nuevo)
 }
-
 </script>
 
 <style scoped>

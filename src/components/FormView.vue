@@ -1,148 +1,131 @@
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4"
-  >
-    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl">
-      <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Universidad_Pontificia_Bolivariana_logo.svg/1200px-Universidad_Pontificia_Bolivariana_logo.svg.png"
-              alt="Logo UPB"
-              class="w-full h-full object-contain"
-            />
-          </div>
-          <div>
-            <h1 class="text-xl font-bold text-gray-800">Registrar limpieza</h1>
-            <p class="text-xs text-gray-600">{{ formattedDate }} - {{ formattedTime }}</p>
-          </div>
-        </div>
-        <button
-          @click="$emit('changeView', 'menu')"
-          class="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-        >
-          ✕
-        </button>
+  <div class="container">
+    <div class="header">
+      <div class="logo">UPB</div>
+      <div class="header-text">
+        <h1>Registrar limpieza</h1>
+        <p>{{ formattedDate }} - {{ formattedTime }}</p>
       </div>
+    </div>
 
-      <form @submit.prevent="submitForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"> 🧹 Tipo de aseo </label>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <label
-              v-for="tipo in ['general', 'profundo', 'desinfección']"
-              :key="tipo"
-              :class="{
-                'border-blue-500 ring-2 ring-blue-500': formData.tipoLimpieza === tipo,
-              }"
-              class="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition duration-200 text-sm bg-white shadow-sm"
-            >
+    <div class="form-container">
+      <form @submit.prevent="submitForm">
+        <!-- Tipo de aseo -->
+        <div class="form-group">
+          <div class="section-title"><span>⚫</span> Tipo de aseo</div>
+          <div class="radio-group">
+            <div class="radio-option">
               <input
                 type="radio"
+                id="general"
                 name="tipoLimpieza"
-                :value="tipo"
+                value="general"
                 v-model="formData.tipoLimpieza"
-                class="w-4 h-4 text-blue-600"
               />
-              <span class="capitalize">{{ tipo }}</span>
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            📦 Reposición de elementos
-          </label>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <label
-              v-for="item in [
-                { key: 'papel', label: 'Papel' },
-                { key: 'toalla', label: 'Toalla' },
-                { key: 'jabon', label: 'Jabón' },
-              ]"
-              :key="item.key"
-              :class="{
-                'border-blue-500 ring-2 ring-blue-500': formData.reposicion[item.key],
-              }"
-              class="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition duration-200 text-sm bg-white shadow-sm"
-            >
+              <label for="general">General</label>
+            </div>
+            <div class="radio-option">
               <input
-                type="checkbox"
-                v-model="formData.reposicion[item.key]"
-                class="w-4 h-4 text-blue-600 rounded"
+                type="radio"
+                id="profundo"
+                name="tipoLimpieza"
+                value="profundo"
+                v-model="formData.tipoLimpieza"
               />
-              <span>{{ item.label }}</span>
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"> 📍 Lugar </label>
-          <div class="space-y-2">
-            <div>
-              <label class="block text-xs text-gray-600 mb-1">Bloque</label>
-              <select
-                v-model="formData.bloque"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-              >
-                <option value="">Seleccionar bloque</option>
-                <option v-for="(bloque, key) in ubicaciones" :key="key" :value="key">
-                  {{ bloque.nombre }}
-                </option>
-              </select>
+              <label for="profundo">Profundo</label>
             </div>
-            <div v-if="formData.bloque">
-              <label class="block text-xs text-gray-600 mb-1">Tipo de lugar</label>
-              <select
-                v-model="formData.tipoLugar"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-              >
-                <option value="">Seleccionar tipo</option>
-                <option
-                  v-for="(tipo, key) in ubicaciones[formData.bloque].tiposLugar"
-                  :key="key"
-                  :value="key"
-                >
-                  {{ tipo.nombre }}
-                </option>
-              </select>
-            </div>
-            <div v-if="formData.bloque && formData.tipoLugar">
-              <label class="block text-xs text-gray-600 mb-1">Lugar</label>
-              <select
-                v-model="formData.lugar"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-              >
-                <option value="">Seleccionar lugar</option>
-                <option
-                  v-for="(lugar, index) in ubicaciones[formData.bloque].tiposLugar[
-                    formData.tipoLugar
-                  ].lugares"
-                  :key="index"
-                  :value="lugar"
-                >
-                  {{ lugar }}
-                </option>
-              </select>
+            <div class="radio-option">
+              <input
+                type="radio"
+                id="desinfeccion"
+                name="tipoLimpieza"
+                value="desinfeccion"
+                v-model="formData.tipoLimpieza"
+              />
+              <label for="desinfeccion">Desinfección</label>
             </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"> 📝 Observaciones </label>
+        <!-- Reposición de elementos -->
+        <div class="form-group">
+          <div class="section-title">Reposición de elementos</div>
+          <div class="checkbox-group">
+            <div class="checkbox-option">
+              <input type="checkbox" id="papel" v-model="formData.reposicion.papel" />
+              <label for="papel">Papel</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" id="toalla" v-model="formData.reposicion.toalla" />
+              <label for="toalla">Toalla</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" id="jabon" v-model="formData.reposicion.jabon" />
+              <label for="jabon">Jabón</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque -->
+        <div class="form-group">
+          <label class="form-label">Bloque</label>
+          <div class="select-container">
+            <select v-model="formData.bloque" class="form-select">
+              <option value="">Bloque 9 - Edificio de Posgrados UPB</option>
+              <option v-for="(bloque, key) in ubicaciones" :key="key" :value="key">
+                {{ bloque.nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tipo lugar -->
+        <div class="form-group" v-if="formData.bloque">
+          <label class="form-label">Tipo lugar</label>
+          <div class="select-container">
+            <select v-model="formData.tipoLugar" class="form-select">
+              <option value="">Baño</option>
+              <option
+                v-for="(tipo, key) in ubicaciones[formData.bloque].tiposLugar"
+                :key="key"
+                :value="key"
+              >
+                {{ tipo.nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lugar -->
+        <div class="form-group" v-if="formData.bloque && formData.tipoLugar">
+          <label class="form-label">Lugar</label>
+          <div class="select-container">
+            <select v-model="formData.lugar" class="form-select">
+              <option value="">Piso 2 - Caballeros</option>
+              <option
+                v-for="(lugar, index) in ubicaciones[formData.bloque].tiposLugar[formData.tipoLugar]
+                  .lugares"
+                :key="index"
+                :value="lugar"
+              >
+                {{ lugar }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="form-group">
+          <label class="form-label">⚫ Observaciones</label>
           <textarea
             v-model="formData.observaciones"
-            rows="3"
+            class="form-textarea"
             placeholder="Por aquí tus observaciones en esta limpieza..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
           ></textarea>
         </div>
 
-        <button
-          type="submit"
-          :disabled="!isFormValid"
-          class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200 font-medium disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
-        >
+        <!-- Botón submit -->
+        <button type="submit" :disabled="!isFormValid" class="submit-btn">
           ✓ Registrar limpieza >
         </button>
       </form>
@@ -156,8 +139,8 @@ import { ref, computed } from 'vue'
 const emit = defineEmits(['changeView'])
 
 const formData = ref({
-  tipoLimpieza: '',
-  reposicion: { papel: false, toalla: false, jabon: false },
+  tipoLimpieza: 'general',
+  reposicion: { papel: true, toalla: false, jabon: true },
   bloque: '',
   tipoLugar: '',
   lugar: '',
@@ -181,19 +164,202 @@ const ubicaciones = {
 }
 
 const isFormValid = computed(() => {
-  return (
-    formData.value.tipoLimpieza &&
-    formData.value.bloque &&
-    formData.value.tipoLugar &&
-    formData.value.lugar
-  )
+  return formData.value.tipoLimpieza
 })
 
-const formattedDate = new Date().toLocaleDateString()
-const formattedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+const formattedDate = new Date().toLocaleDateString('es-ES')
+const formattedTime = new Date().toLocaleTimeString('es-ES', {
+  hour: '2-digit',
+  minute: '2-digit',
+})
 
 function submitForm() {
   alert('Formulario enviado con éxito')
   emit('changeView', 'menu')
 }
 </script>
+
+<style scoped>
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background: #28a745;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.header-text h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.header-text p {
+  font-size: 12px;
+  color: #666;
+}
+
+.form-container {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.radio-option input[type='radio'] {
+  margin: 0;
+}
+
+.radio-option label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.checkbox-group {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-option input[type='checkbox'] {
+  margin: 0;
+}
+
+.checkbox-option label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.select-container {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-textarea::placeholder {
+  color: #999;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+</style>
